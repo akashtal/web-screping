@@ -1,5 +1,5 @@
-// Default selectors for scraping company data
-export default {
-  companyName: 'h1, .company-name, .brand-name', // CSS selectors for company name
-  waitFor: null // Can be customized per site for dynamic content
+const selectors = {
+  waitFor: 'body', // or replace with a known page element like '.main-content'
 };
+
+export default selectors;
