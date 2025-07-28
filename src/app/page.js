@@ -1,13 +1,13 @@
 "use client";
 import { useState } from 'react';
-import { 
-  Globe, 
-  Mail, 
-  Phone, 
-  Building, 
-  Download, 
-  FileText, 
-  Loader2, 
+import {
+  Globe,
+  Mail,
+  Phone,
+  Building,
+  Download,
+  FileText,
+  Loader2,
   Search,
   ExternalLink,
   Twitter,
@@ -36,7 +36,7 @@ export default function Home() {
     setLoading(true);
     setResults([]);
     setSummary(null);
-    
+
     const urlList = urls.split('\n').filter(Boolean).map(url => url.trim());
     setProgress({ current: 0, total: urlList.length });
 
@@ -44,20 +44,20 @@ export default function Home() {
       const res = await fetch('/api/scrape', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           urls: urlList,
-          extractionLevel 
+          extractionLevel
         }),
       });
-    
+
       if (!res.ok) {
         console.error('Response not OK:', res.status, res.statusText);
-        
+
         let errorMessage = `HTTP ${res.status}: ${res.statusText}`;
         try {
           const errorText = await res.text();
           console.error('Error response body:', errorText);
-          
+
           try {
             const errorJson = JSON.parse(errorText);
             errorMessage = errorJson.error || errorMessage;
@@ -67,7 +67,7 @@ export default function Home() {
         } catch (textError) {
           console.error('Could not read error response:', textError);
         }
-        
+
         throw new Error(errorMessage);
       }
 
@@ -81,7 +81,7 @@ export default function Home() {
 
       const responseText = await res.text();
       console.log('Raw response:', responseText.substring(0, 500) + '...');
-      
+
       let data;
       try {
         data = JSON.parse(responseText);
@@ -96,12 +96,12 @@ export default function Home() {
       setResults(data.results || []);
       setSummary(data.summary || null);
       setProgress({ current: data.results?.length || 0, total: data.results?.length || 0 });
-      
+
     } catch (err) {
       console.error('Scrape Error:', err);
       alert(`Failed to scrape URLs: ${err.message}`);
     }
-    
+
     setLoading(false);
   };
 
@@ -191,7 +191,7 @@ export default function Home() {
               <p className="text-gray-400 mt-1">Extract comprehensive company information with AI precision</p>
             </div>
           </div>
-          
+
           <div className="grid lg:grid-cols-3 gap-8">
             {/* URL Input Section */}
             <div className="lg:col-span-2">
@@ -212,7 +212,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            
+
             {/* Settings Section */}
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-3">
@@ -228,7 +228,7 @@ export default function Home() {
                 <option value="medium">🔥 Medium (Balanced Details)</option>
                 <option value="advanced">💎 Advanced (Complete Profile)</option>
               </select>
-              
+
               <div className="bg-gray-900/30 border border-gray-700/30 p-5 rounded-xl">
                 <h3 className="flex items-center gap-2 font-medium text-gray-300 mb-3">
                   <Search className="w-4 h-4" />
@@ -283,7 +283,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
+
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4 mt-8">
             <button
@@ -303,7 +303,7 @@ export default function Home() {
                 </>
               )}
             </button>
-            
+
             {results.length > 0 && (
               <>
                 <button
@@ -336,7 +336,7 @@ export default function Home() {
                       <span className="text-blue-400">{progress.current} of {progress.total}</span>
                     </div>
                     <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div 
+                      <div
                         className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${progress.total > 0 ? (progress.current / progress.total) * 100 : 0}%` }}
                       ></div>
@@ -398,7 +398,7 @@ export default function Home() {
               </div>
               <h2 className="text-2xl font-bold text-white">Results ({results.length})</h2>
             </div>
-            
+
             <div className="grid gap-6">
               {results.map((r, i) => (
                 <div key={i} className="bg-gray-900/50 border border-gray-700/30 rounded-xl p-6 hover:border-gray-600/50 transition-all group">
@@ -423,19 +423,19 @@ export default function Home() {
                       #{i + 1}
                     </span>
                   </div>
-                  
+
                   <div className="grid lg:grid-cols-2 gap-6 text-sm">
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
                         <Globe className="w-4 h-4 text-blue-400" />
                         <span className="text-gray-400">Website:</span>
-                        <a href={r.website} target="_blank" rel="noopener noreferrer" 
-                           className="text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1 transition-colors">
+                        <a href={r.website} target="_blank" rel="noopener noreferrer"
+                          className="text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1 transition-colors">
                           {r.website}
                           <ExternalLink className="w-3 h-3" />
                         </a>
                       </div>
-                      
+
                       {r.emails.length > 0 && (
                         <div className="flex items-start gap-2">
                           <Mail className="w-4 h-4 text-green-400 mt-0.5" />
@@ -451,7 +451,7 @@ export default function Home() {
                           </div>
                         </div>
                       )}
-                      
+
                       {r.phones.length > 0 && (
                         <div className="flex items-start gap-2">
                           <Phone className="w-4 h-4 text-yellow-400 mt-0.5" />
@@ -467,7 +467,7 @@ export default function Home() {
                           </div>
                         </div>
                       )}
-                      
+
                       {r.foundedYear && (
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-cyan-400" />
@@ -476,7 +476,7 @@ export default function Home() {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="space-y-3">
                       {r.description && (
                         <div className="flex items-start gap-2">
@@ -489,7 +489,7 @@ export default function Home() {
                           </div>
                         </div>
                       )}
-                      
+
                       {r.socialMedia && (
                         <div className="flex items-start gap-2">
                           <Users className="w-4 h-4 text-purple-400 mt-0.5" />
@@ -498,21 +498,21 @@ export default function Home() {
                             <div className="flex gap-2 mt-1">
                               {r.socialMedia.linkedin && (
                                 <a href={r.socialMedia.linkedin} target="_blank" rel="noopener noreferrer"
-                                   className="flex items-center gap-1 bg-blue-900/20 text-blue-300 hover:text-blue-200 px-2 py-1 rounded text-xs transition-colors">
+                                  className="flex items-center gap-1 bg-blue-900/20 text-blue-300 hover:text-blue-200 px-2 py-1 rounded text-xs transition-colors">
                                   <Linkedin className="w-3 h-3" />
                                   LinkedIn
                                 </a>
                               )}
                               {r.socialMedia.twitter && (
                                 <a href={r.socialMedia.twitter} target="_blank" rel="noopener noreferrer"
-                                   className="flex items-center gap-1 bg-sky-900/20 text-sky-300 hover:text-sky-200 px-2 py-1 rounded text-xs transition-colors">
+                                  className="flex items-center gap-1 bg-sky-900/20 text-sky-300 hover:text-sky-200 px-2 py-1 rounded text-xs transition-colors">
                                   <Twitter className="w-3 h-3" />
                                   Twitter
                                 </a>
                               )}
                               {r.socialMedia.facebook && (
                                 <a href={r.socialMedia.facebook} target="_blank" rel="noopener noreferrer"
-                                   className="flex items-center gap-1 bg-blue-900/20 text-blue-300 hover:text-blue-200 px-2 py-1 rounded text-xs transition-colors">
+                                  className="flex items-center gap-1 bg-blue-900/20 text-blue-300 hover:text-blue-200 px-2 py-1 rounded text-xs transition-colors">
                                   <Facebook className="w-3 h-3" />
                                   Facebook
                                 </a>
@@ -521,7 +521,7 @@ export default function Home() {
                           </div>
                         </div>
                       )}
-                      
+
                       {r.techStack && r.techStack.length > 0 && (
                         <div className="flex items-start gap-2">
                           <Code className="w-4 h-4 text-orange-400 mt-0.5" />
@@ -537,7 +537,7 @@ export default function Home() {
                           </div>
                         </div>
                       )}
-                      
+
                       {r.services && r.services.length > 0 && (
                         <div className="flex items-start gap-2">
                           <TrendingUp className="w-4 h-4 text-red-400 mt-0.5" />
@@ -558,7 +558,7 @@ export default function Home() {
                       )}
                     </div>
                   </div>
-                  
+
                   {r.error && (
                     <div className="mt-4 flex items-start gap-2 p-3 bg-red-900/20 border border-red-700/30 rounded-lg">
                       <AlertCircle className="w-4 h-4 text-red-400 mt-0.5" />
