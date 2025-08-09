@@ -114,6 +114,8 @@ async function scrapeWebsite(browser, url, level) {
   const maxRetries = 2;
   let attempt = 0;
 
+  
+
   while (attempt < maxRetries) {
     let page;
     try {
